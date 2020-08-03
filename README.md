@@ -1,0 +1,2 @@
+# CSCR
+compact scripting language

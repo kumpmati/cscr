@@ -1,0 +1,5 @@
+# build directory
+out
+
+# IntelliJ project config files
+.idea
