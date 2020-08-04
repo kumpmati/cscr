@@ -2,19 +2,26 @@ package main
 
 import (
 	"fmt"
-	"kumpmati/cscr"
+	"github.com/kumpmati/cscr"
 )
 
 func main() {
-	compactScript := cscr.New()
-	err := compactScript.Init()
+	cfg, err := cscr.DefaultConfig()
 	if err != nil {
+		fmt.Printf("error while initializing default config: %v\n", err)
+		return
+	}
+	// create new cscr
+	c := cscr.New()
+	err = c.Init(cfg)
+	if err != nil {
+		fmt.Printf("initialization error: %v\n", err)
 		return
 	}
 
-	err = compactScript.Run()
+	err = c.Run()
 	if err != nil {
-		fmt.Printf("error running: %v\n", err)
+		fmt.Printf("runtime error: %v\n", err)
 		return
 	}
 }
