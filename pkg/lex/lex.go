@@ -1,4 +1,4 @@
-// transforms raw text to an array of tokens
+// transforms raw text to an array of token
 package lex
 
 import (
@@ -7,16 +7,6 @@ import (
 	"fmt"
 	"os"
 )
-
-type Token struct {
-	Value      string
-	Properties TokenProperties
-}
-
-type TokenProperties struct {
-	IsKeyword  bool
-	IsOperator bool
-}
 
 // lexer
 type Lexer struct {
@@ -39,36 +29,19 @@ func New() Lexer { return Lexer{} }
 // initializes the lexer with the given config
 func (l *Lexer) Init(cfg Config) (err error) {
 	// open file
-	f, err := l.Open(cfg.FilePath)
+	err = l.Open(cfg.FilePath)
 	if err != nil {
 		fmt.Printf("error while initializing lexer: %v\n", err)
 		return
 	}
-	l.currentFile = f
-
 	l.config = cfg
-	return
-}
-
-// runs the lexer, parsing the text into tokens
-func (l *Lexer) Run() (err error) {
-	if l.config.FilePath == "" {
-		return errors.New("no file path specified")
-	}
-
-	tokens, err := l.LexFile(l.config.FilePath)
-	if err != nil {
-		return err
-	}
-
-	l.tokens = tokens
 	return
 }
 
 // opens a file for reading. Note: does not
 // close the file, Close() must be called later
-func (l *Lexer) Open(path string) (f *os.File, err error) {
-	f, err = os.Open(path)
+func (l *Lexer) Open(path string) (err error) {
+	f, err := os.Open(path)
 	if err != nil {
 		fmt.Printf("error while setting input file: %v\n", err)
 		return
@@ -78,10 +51,27 @@ func (l *Lexer) Open(path string) (f *os.File, err error) {
 	return
 }
 
-// opens a file for reading and transforms its contents to tokens,
+// runs the lexer, parsing the text into token
+func (l *Lexer) Run() (err error) {
+	if l.config.FilePath == "" {
+		return errors.New("no file path specified")
+	}
+
+	l.tokens, err = l.LexFile(l.config.FilePath)
+	if err != nil {
+		return err
+	}
+
+	for _, v := range l.tokens {
+		fmt.Printf("token: '%v', type: %v\n", v.Value, v.Type)
+	}
+	return
+}
+
+// opens a file for reading and transforms its contents to token,
 // closing the file at the end
 func (l *Lexer) LexFile(path string) (tokens []Token, err error) {
-	f, err := l.Open(path)
+	err = l.Open(path)
 	if err != nil {
 		return
 	}
@@ -91,19 +81,19 @@ func (l *Lexer) LexFile(path string) (tokens []Token, err error) {
 		return
 	}
 
-	return tokens, f.Close()
+	return tokens, l.currentFile.Close()
 }
 
 // reads the lexer struct's file line by line
 func (l *Lexer) Lex() (tokens []Token, err error) {
-	tokens = []Token{}
 	if l.config.LineParser == nil {
-		return tokens, errors.New("no line parser specified")
+		panic("no line parser specified")
 	}
 
 	scanner := bufio.NewScanner(l.currentFile)
 	for scanner.Scan() {
-		tokens = append(tokens, l.config.LineParser(scanner.Text())...)
+		txtLine := scanner.Text()
+		tokens = append(tokens, l.config.LineParser(txtLine)...)
 	}
 	return
 }

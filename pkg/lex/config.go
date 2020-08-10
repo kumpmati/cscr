@@ -9,15 +9,3 @@ func DefaultConfig(a args.Args) (cfg Config) {
 	cfg.FilePath = a.FilePath
 	return
 }
-
-// default line parser
-func DefaultLineParser(s string) []Token {
-	t := Token{
-		Value: s,
-		Properties: TokenProperties{
-			IsKeyword:  false,
-			IsOperator: false,
-		},
-	}
-	return []Token{t}
-}

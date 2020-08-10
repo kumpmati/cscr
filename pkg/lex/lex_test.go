@@ -4,7 +4,7 @@ import "testing"
 
 func TestLexer_Init(t *testing.T) {
 	validConfig := Config{
-		FilePath: "../../testdata/validCode.cscr",
+		FilePath: "../../testdata/variable.cscr",
 	}
 
 	l := New()

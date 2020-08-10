@@ -11,11 +11,11 @@ func TestCscr_Init(t *testing.T) {
 	// test
 	validConfig := Config{
 		Arguments: args.Args{
-			FilePath: "testdata/validCode.cscr",
+			FilePath: "testdata/variable.cscr",
 		},
 		LexerConfig: lex.Config{
 			LineParser: nil,
-			FilePath:   "testdata/validCode.cscr",
+			FilePath:   "testdata/variable.cscr",
 		},
 	}
 

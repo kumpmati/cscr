@@ -19,6 +19,7 @@ func main() {
 		return
 	}
 
+	// run cscr
 	err = c.Run()
 	if err != nil {
 		fmt.Printf("runtime error: %v\n", err)

@@ -24,8 +24,9 @@ func (c *Cscr) Init(cfg Config) (err error) {
 	// parse arguments first
 	c.config = cfg
 
-	// create a new lexer and initialize it with the given config
+	// create a new lexer
 	c.lexer = lex.New()
+	// initialize the lexer with the given config
 	err = c.lexer.Init(cfg.LexerConfig)
 	if err != nil {
 		fmt.Printf("error while initializing cscr: %v\n", err)
@@ -33,7 +34,21 @@ func (c *Cscr) Init(cfg Config) (err error) {
 	return
 }
 
-// runs the parsed code
+// runs the lexer
 func (c *Cscr) Run() (err error) {
 	return c.lexer.Run()
+}
+
+// default configuration
+func DefaultConfig() (c Config, err error) {
+	// parse using command line arguments
+	a, err := args.Parse(args.CommandLineArgs())
+	if err != nil {
+		return
+	}
+	c.Arguments = a
+
+	// set lexer config to lexer default config
+	c.LexerConfig = lex.DefaultConfig(a)
+	return
 }
