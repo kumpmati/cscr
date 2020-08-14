@@ -4,9 +4,9 @@ import "testing"
 
 func TestDefaultLineParser(t *testing.T) {
 	// code snippet with no whitespace
-	noWhiteSpaceCode := "a:=5;a+=1;func(a,b){}"
+	noWhiteSpaceCode := "a:=5;a+=1;a<b;"
 	// same code snippet with spaces and tab characters as whitespace
-	whiteSpacedCode := "  a		:=   	  5 	 ; 	 	a  +=  1  ; func  ( a 	,	b )  {  }  "
+	whiteSpacedCode := "  a  :=	5;	a   +=  1  ; a <	b	;	"
 
 	code1, code2 := DefaultLineParser(noWhiteSpaceCode), DefaultLineParser(whiteSpacedCode)
 
