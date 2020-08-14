@@ -1,80 +1,64 @@
 package lex
 
-type Types []string
-
+// token struct
 type Token struct {
 	Value     string
-	Type      string
+	Type      TokenType
 	ChainWith Types
 }
+type Types []TokenType
 
-// token types
-const (
-	Operator     = "opn"
-	MathOperator = "mop"
-	Keyword      = "kwd"
-	Separator    = "sep"
-	Block        = "blk"
-	Expression   = "exp"
-	Accessor     = "acc"
-	Break        = "brk"
-	Str          = "str"
-	Default      = "dft"
-	None         = "_none_"
-	Self         = "_self_"
-)
-
-// store all properties with their respective properties here
+// list of tokens with defined types and chaining behaviour
 var tokens = map[string]Token{
 	// string
 	"\"": {Type: Str, ChainWith: Types{None}},
 	"`":  {Type: Str, ChainWith: Types{None}},
 
-	// assignment
-	":=": {Type: Operator, ChainWith: Types{None}},
-	":":  {Type: Operator, ChainWith: Types{MathOperator}},
-
 	// separators
 	",": {Type: Separator, ChainWith: Types{None}},
 	".": {Type: Separator, ChainWith: Types{None}},
 
-	// math operators
-	"=":  {Type: MathOperator, ChainWith: Types{MathOperator}},
-	"+":  {Type: MathOperator, ChainWith: Types{MathOperator}},
-	"++": {Type: MathOperator, ChainWith: Types{None}},
-	"-":  {Type: MathOperator, ChainWith: Types{MathOperator, Operator}},
-	"--": {Type: MathOperator, ChainWith: Types{None}},
-	"/":  {Type: MathOperator, ChainWith: Types{MathOperator}},
-	"*":  {Type: MathOperator, ChainWith: Types{MathOperator}},
+	// assignment
+	":=": {Type: Operator, ChainWith: Types{None}},
+	":":  {Type: Operator, ChainWith: Types{Operator}},
+	"=":  {Type: Operator, ChainWith: Types{Math}},
 
-	// reassignment operators
+	// math symbols
+	"+": {Type: Math, ChainWith: Types{Math}},
+	"-": {Type: Math, ChainWith: Types{Math}},
+	"/": {Type: Math, ChainWith: Types{Math}},
+	"*": {Type: Math, ChainWith: Types{Math}},
+
+	// math operators
 	"+=": {Type: MathOperator, ChainWith: Types{None}},
 	"-=": {Type: MathOperator, ChainWith: Types{None}},
-	"*=": {Type: MathOperator, ChainWith: Types{None}},
 	"/=": {Type: MathOperator, ChainWith: Types{None}},
+	"*=": {Type: MathOperator, ChainWith: Types{None}},
 
-	"(": {Type: Expression, ChainWith: Types{None}},
-	")": {Type: Expression, ChainWith: Types{None}},
+	// logic operators
+	">":  {Type: Logic, ChainWith: Types{Math}},
+	">=": {Type: Logic, ChainWith: Types{None}},
+	"<":  {Type: Logic, ChainWith: Types{Math}},
+	"<=": {Type: Logic, ChainWith: Types{None}},
+	"==": {Type: Logic, ChainWith: Types{None}},
+	"!":  {Type: Logic, ChainWith: Types{Math}},
+	"!=": {Type: Logic, ChainWith: Types{None}},
 
-	"[": {Type: Accessor, ChainWith: Types{None}},
-	"]": {Type: Accessor, ChainWith: Types{None}},
+	"(": {Type: Block, ChainWith: Types{None}},
+	")": {Type: Block, ChainWith: Types{None}},
 
-	"{": {Type: Block, ChainWith: Types{None}},
-	"}": {Type: Block, ChainWith: Types{None}},
-
-	// breaks
-	" ":  {Type: Break, ChainWith: Types{None}},
-	"\n": {Type: Break, ChainWith: Types{None}},
-	";":  {Type: Break, ChainWith: Types{None}},
+	";": {Type: Break, ChainWith: Types{None}},
 
 	// keywords
-	"func":   {Type: Keyword, ChainWith: Types{None}},
+	"fn":     {Type: Keyword, ChainWith: Types{None}},
 	"return": {Type: Keyword, ChainWith: Types{None}},
 	"if":     {Type: Keyword, ChainWith: Types{None}},
 	"else":   {Type: Keyword, ChainWith: Types{None}},
+	"true":   {Type: Keyword, ChainWith: Types{None}},
+	"false":  {Type: Keyword, ChainWith: Types{None}},
 }
 
-var defaultToken = Token{Type: Default, ChainWith: Types{Self}}
+var defaultToken = Token{Type: Default, ChainWith: Types{Self, Separator}}
 
 // returns a token based on the given string
 func GetToken(s string) (t Token) {
@@ -89,6 +73,7 @@ func GetToken(s string) (t Token) {
 // then the token will get the properties of that token. If a defined token isn't found,
 // the new token gets the default properties
 func CreateToken(s string) (t Token) {
+	// get existing token if found, default token otherwise
 	t = GetToken(s)
 	t.Value = s
 	return
@@ -100,12 +85,12 @@ func (t Token) IsChainableWith(with Token) bool {
 		return false
 	}
 	if contains(t.ChainWith, Self) {
-		return t.Type == with.Type
+		return t.Type == with.Type || contains(t.ChainWith, with.Type)
 	}
 	return contains(t.ChainWith, with.Type)
 }
 
-func contains(strArr []string, str string) bool {
+func contains(strArr []TokenType, str TokenType) bool {
 	if len(strArr) == 0 {
 		return false
 	}

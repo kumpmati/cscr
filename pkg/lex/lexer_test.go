@@ -4,7 +4,8 @@ import "testing"
 
 func TestLexer_Init(t *testing.T) {
 	validConfig := Config{
-		FilePath: "../../testdata/variable.cscr",
+		FilePath:   "../../testdata/variable.cscr",
+		LineParser: DefaultLineParser,
 	}
 
 	l := New()
@@ -14,7 +15,8 @@ func TestLexer_Init(t *testing.T) {
 	}
 
 	invalidConfig := Config{
-		FilePath: "./non/existent/file.cscr",
+		FilePath:   "./non/existent/file.cscr",
+		LineParser: nil,
 	}
 
 	// reset lexer

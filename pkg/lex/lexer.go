@@ -15,15 +15,7 @@ type Lexer struct {
 	tokens      []Token
 }
 
-// lexer config
-type Config struct {
-	LineParser LineParser
-	FilePath   string
-}
-
-type LineParser func(s string) []Token
-
-// returns a new lexer instance without configuring it
+// returns a new lexer instance without initializing it
 func New() Lexer { return Lexer{} }
 
 // initializes the lexer with the given config
@@ -31,15 +23,19 @@ func (l *Lexer) Init(cfg Config) (err error) {
 	// open file
 	err = l.Open(cfg.FilePath)
 	if err != nil {
-		fmt.Printf("error while initializing lexer: %v\n", err)
-		return
+		return errors.New("file could not be opened")
 	}
+
+	if cfg.LineParser == nil {
+		return errors.New("no line parser specified")
+	}
+
 	l.config = cfg
 	return
 }
 
-// opens a file for reading. Note: does not
-// close the file, Close() must be called later
+// Opens a file for reading.
+// NOTE: does not close the file, Close() must be called on the file later!
 func (l *Lexer) Open(path string) (err error) {
 	f, err := os.Open(path)
 	if err != nil {
@@ -61,17 +57,18 @@ func (l *Lexer) Run() (err error) {
 	if err != nil {
 		return err
 	}
-
-	for _, v := range l.tokens {
-		fmt.Printf("token: '%v', type: %v\n", v.Value, v.Type)
-	}
 	return
 }
 
-// opens a file for reading and transforms its contents to token,
-// closing the file at the end
+func (l *Lexer) GetTokens() []Token {
+	return l.tokens
+}
+
+// Opens a file for reading and transforms its contents to tokens.
+// Closes the opened file after completing.
 func (l *Lexer) LexFile(path string) (tokens []Token, err error) {
 	err = l.Open(path)
+	defer l.currentFile.Close()
 	if err != nil {
 		return
 	}
@@ -81,7 +78,7 @@ func (l *Lexer) LexFile(path string) (tokens []Token, err error) {
 		return
 	}
 
-	return tokens, l.currentFile.Close()
+	return
 }
 
 // reads the lexer struct's file line by line

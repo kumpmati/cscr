@@ -31,5 +31,9 @@ func DefaultLineParser(s string) (tokens []Token) {
 	if strings.TrimSpace(currentLine) != "" {
 		tokens = append(tokens, CreateToken(currentLine))
 	}
+	// create newline token after everything else
+	if len(tokens) > 0 && tokens[len(tokens)-1].Type != Break {
+		tokens = append(tokens, CreateToken("\n"))
+	}
 	return
 }

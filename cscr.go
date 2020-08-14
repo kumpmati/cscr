@@ -3,17 +3,20 @@ package cscr
 import (
 	"fmt"
 	"github.com/kumpmati/cscr/pkg/args"
+	"github.com/kumpmati/cscr/pkg/ast"
 	"github.com/kumpmati/cscr/pkg/lex"
 )
 
 type Config struct {
-	Arguments   args.Args
-	LexerConfig lex.Config
+	Arguments          args.Args
+	LexerConfig        lex.Config
+	AstGeneratorConfig ast.Config
 }
 
 type Cscr struct {
 	config Config
 	lexer  lex.Lexer
+	ast    ast.Generator
 }
 
 // returns a new cscr instance
@@ -24,19 +27,37 @@ func (c *Cscr) Init(cfg Config) (err error) {
 	// parse arguments first
 	c.config = cfg
 
-	// create a new lexer
+	// lexer
 	c.lexer = lex.New()
-	// initialize the lexer with the given config
 	err = c.lexer.Init(cfg.LexerConfig)
 	if err != nil {
-		fmt.Printf("error while initializing cscr: %v\n", err)
+		return err
+	}
+
+	// ast generator
+	c.ast = ast.New()
+	err = c.ast.Init(cfg.AstGeneratorConfig)
+	if err != nil {
+		return err
 	}
 	return
 }
 
 // runs the lexer
 func (c *Cscr) Run() (err error) {
-	return c.lexer.Run()
+	err = c.lexer.Run()
+	if err != nil {
+		return err
+	}
+
+	c.ast.SetTokens(c.lexer.GetTokens())
+	err = c.ast.Run()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(*c.ast.GetTree())
+	return
 }
 
 // default configuration
@@ -48,7 +69,10 @@ func DefaultConfig() (c Config, err error) {
 	}
 	c.Arguments = a
 
-	// set lexer config to lexer default config
+	// set lexer config to default
 	c.LexerConfig = lex.DefaultConfig(a)
+
+	// set ast generator config to default
+	c.AstGeneratorConfig = ast.DefaultConfig(a)
 	return
 }

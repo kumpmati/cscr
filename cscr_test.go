@@ -14,7 +14,7 @@ func TestCscr_Init(t *testing.T) {
 			FilePath: "testdata/variable.cscr",
 		},
 		LexerConfig: lex.Config{
-			LineParser: nil,
+			LineParser: lex.DefaultLineParser,
 			FilePath:   "testdata/variable.cscr",
 		},
 	}
@@ -30,6 +30,7 @@ func TestCscr_Init(t *testing.T) {
 			FilePath: "",
 		},
 		LexerConfig: lex.Config{
+			FilePath:   "",
 			LineParser: nil,
 		},
 	}
@@ -38,6 +39,6 @@ func TestCscr_Init(t *testing.T) {
 	c = New()
 	err = c.Init(invalidConfig)
 	if err == nil {
-		t.Error("cscr didn't fail with invalid config")
+		t.Error("expected cscr configuration to fail with invalid config")
 	}
 }
