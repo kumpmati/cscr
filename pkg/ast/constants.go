@@ -3,6 +3,7 @@ package ast
 const (
 	// AST Node types
 	Operator  = "op"
+	Keyword   = "kw"
 	Block     = "block"
 	Constant  = "const"
 	Reference = "ref"
@@ -13,6 +14,6 @@ const (
 	missingParenErr = "missing an opening parenthesis"
 
 	// node type evaluation regexp patterns
-	varNameRegexp = `^[a-zA-Z_]+$`
+	varNameRegexp = `^#?[a-zA-Z_]+$`
 	numberRegexp  = `^[0-9]*\.?[0-9]*$`
 )

@@ -34,6 +34,11 @@ func nodeFromToken(t lex.Token) (Node, error) {
 
 func nodeTypeFromToken(t lex.Token) (n NodeType) {
 	switch t.Type {
+	case lex.Keyword:
+		n.Type = Keyword
+		n.SubType = t.Type
+		n.Associate = "right"
+		n.Precedence = 5
 	case lex.Operator:
 		// operators and math operators
 		n.Type = Operator

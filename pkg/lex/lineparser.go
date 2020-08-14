@@ -13,6 +13,11 @@ func DefaultLineParser(s string) (tokens []Token) {
 	prevChar := string(s[0])
 	currentLine := prevChar
 
+	// ignore comments
+	if len(s) > 2 && s[0:2] == "//" {
+		return
+	}
+
 	for _, v := range s[1:] {
 		c := string(v)
 		curr, prev := GetToken(c), GetToken(currentLine)

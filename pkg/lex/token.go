@@ -21,13 +21,13 @@ var tokens = map[string]Token{
 	// assignment
 	":=": {Type: Operator, ChainWith: Types{None}},
 	":":  {Type: Operator, ChainWith: Types{Operator}},
-	"=":  {Type: Operator, ChainWith: Types{Math}},
+	"=":  {Type: Operator, ChainWith: Types{Self, Math, Logic}},
 
 	// math symbols
-	"+": {Type: Math, ChainWith: Types{Math}},
-	"-": {Type: Math, ChainWith: Types{Math}},
-	"/": {Type: Math, ChainWith: Types{Math}},
-	"*": {Type: Math, ChainWith: Types{Math}},
+	"+": {Type: Math, ChainWith: Types{Math, Operator}},
+	"-": {Type: Math, ChainWith: Types{Math, Operator, Default}},
+	"/": {Type: Math, ChainWith: Types{Math, Operator}},
+	"*": {Type: Math, ChainWith: Types{Math, Operator}},
 
 	// math operators
 	"+=": {Type: MathOperator, ChainWith: Types{None}},
@@ -36,18 +36,19 @@ var tokens = map[string]Token{
 	"*=": {Type: MathOperator, ChainWith: Types{None}},
 
 	// logic operators
-	">":  {Type: Logic, ChainWith: Types{Math}},
+	">":  {Type: Logic, ChainWith: Types{Operator}},
 	">=": {Type: Logic, ChainWith: Types{None}},
-	"<":  {Type: Logic, ChainWith: Types{Math}},
+	"<":  {Type: Logic, ChainWith: Types{Operator}},
 	"<=": {Type: Logic, ChainWith: Types{None}},
 	"==": {Type: Logic, ChainWith: Types{None}},
-	"!":  {Type: Logic, ChainWith: Types{Math}},
+	"!":  {Type: Logic, ChainWith: Types{Operator}},
 	"!=": {Type: Logic, ChainWith: Types{None}},
 
 	"(": {Type: Block, ChainWith: Types{None}},
 	")": {Type: Block, ChainWith: Types{None}},
 
-	";": {Type: Break, ChainWith: Types{None}},
+	";":  {Type: Break, ChainWith: Types{None}},
+	"\n": {Type: Break, ChainWith: Types{None}},
 
 	// keywords
 	"fn":     {Type: Keyword, ChainWith: Types{None}},
@@ -56,6 +57,9 @@ var tokens = map[string]Token{
 	"else":   {Type: Keyword, ChainWith: Types{None}},
 	"true":   {Type: Keyword, ChainWith: Types{None}},
 	"false":  {Type: Keyword, ChainWith: Types{None}},
+
+	// dynamic value
+	"#": {Type: Default, ChainWith: Types{Self, Separator}},
 }
 
 var defaultToken = Token{Type: Default, ChainWith: Types{Self, Separator}}

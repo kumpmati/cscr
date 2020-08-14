@@ -1,7 +1,7 @@
 package cscr
 
 import (
-	"fmt"
+	"github.com/kumpmati/cscr/internal/runtime"
 	"github.com/kumpmati/cscr/pkg/args"
 	"github.com/kumpmati/cscr/pkg/ast"
 	"github.com/kumpmati/cscr/pkg/lex"
@@ -11,52 +11,59 @@ type Config struct {
 	Arguments          args.Args
 	LexerConfig        lex.Config
 	AstGeneratorConfig ast.Config
+	RuntimeConfig      runtime.Config
 }
 
 type Cscr struct {
-	config Config
-	lexer  lex.Lexer
-	ast    ast.Generator
+	config  Config
+	lexer   lex.L
+	ast     ast.A
+	runtime runtime.R
 }
 
 // returns a new cscr instance
 func New() Cscr { return Cscr{} }
 
 // initializes cscr with the given config
-func (c *Cscr) Init(cfg Config) (err error) {
+func (c *Cscr) Init(cfg Config) error {
 	// parse arguments first
 	c.config = cfg
 
-	// lexer
 	c.lexer = lex.New()
-	err = c.lexer.Init(cfg.LexerConfig)
-	if err != nil {
+	c.ast = ast.New()
+	c.runtime = runtime.New()
+
+	if err := c.lexer.Init(cfg.LexerConfig); err != nil {
+		return err
+	}
+	if err := c.ast.Init(cfg.AstGeneratorConfig); err != nil {
+		return err
+	}
+	if err := c.runtime.Init(cfg.RuntimeConfig); err != nil {
 		return err
 	}
 
-	// ast generator
-	c.ast = ast.New()
-	err = c.ast.Init(cfg.AstGeneratorConfig)
-	if err != nil {
-		return err
-	}
-	return
+	return nil
 }
 
 // runs the lexer
 func (c *Cscr) Run() (err error) {
-	err = c.lexer.Run()
-	if err != nil {
+	// run lexer
+	if err := c.lexer.Run(); err != nil {
 		return err
 	}
 
+	// set ast tokens
 	c.ast.SetTokens(c.lexer.GetTokens())
-	err = c.ast.Run()
-	if err != nil {
+	if err := c.ast.Run(); err != nil {
 		return err
 	}
 
-	fmt.Println(*c.ast.GetTree())
+	// set runtime program
+	c.runtime.SetProgram(c.ast.GetTree())
+	if err := c.runtime.Run(); err != nil {
+		return err
+	}
 	return
 }
 
@@ -69,10 +76,13 @@ func DefaultConfig() (c Config, err error) {
 	}
 	c.Arguments = a
 
-	// set lexer config to default
+	// get default lexer config
 	c.LexerConfig = lex.DefaultConfig(a)
 
-	// set ast generator config to default
+	// get default ast config
 	c.AstGeneratorConfig = ast.DefaultConfig(a)
+
+	// get default runtime config
+	c.RuntimeConfig = runtime.DefaultRuntimeConfig(a)
 	return
 }

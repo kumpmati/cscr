@@ -6,33 +6,33 @@ import (
 )
 
 // ast generator struct
-type Generator struct {
+type A struct {
 	config Config
 	tokens []lex.Token
 	tree   Node
 }
 
 // returns a new AST parser instance without initializing it
-func New() Generator { return Generator{} }
+func New() A { return A{} }
 
 // initializes the AST generator with the given config
-func (a *Generator) Init(cfg Config) error {
+func (a *A) Init(cfg Config) error {
 	a.config = cfg
 	return nil
 }
 
 // sets the generator's tokens
-func (a *Generator) SetTokens(t []lex.Token) {
+func (a *A) SetTokens(t []lex.Token) {
 	a.tokens = t
 }
 
 // returns a pointer to the generator's tree
-func (a *Generator) GetTree() *Node {
+func (a *A) GetTree() *Node {
 	return &a.tree
 }
 
 // runs the AST generator
-func (a *Generator) Run() (err error) {
+func (a *A) Run() (err error) {
 	if len(a.tokens) == 0 {
 		return errors.New("no tokens to parse")
 	}

@@ -10,14 +10,14 @@ func DefaultTraverserFunc(tokens []lex.Token) (out *Stack) {
 
 	for _, t := range tokens {
 		newNode, err := nodeFromToken(t)
-		if err != nil {
+		if err != nil || newNode.Value == "\n" {
 			// skip to next node silently if node creation failed
 			continue
 		}
 		switch newNode.Type.Type {
 		case Constant, Reference:
 			err = pushToOutStack(stacks, &newNode)
-		case Operator:
+		case Operator, Keyword:
 			switch newNode.Type.SubType {
 			default:
 				topOperator := fakePopFromStack(&stacks.operators)
@@ -41,6 +41,9 @@ func DefaultTraverserFunc(tokens []lex.Token) (out *Stack) {
 				topOperator := fakePopFromStack(&stacks.operators)
 
 				for topOperator != nil && topOperator.Value != "(" {
+					if topOperator.Value == "\n" {
+						continue
+					}
 					err = pushOperator(stacks, popFromOperatorStack(stacks))
 					topOperator = fakePopFromStack(&stacks.operators)
 

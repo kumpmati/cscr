@@ -1,42 +1,28 @@
 # Variables
-variables in cscr can be either values or references.
-Once declared, their type cannot be changed.
-
 ## creating a variable
-variables are declared using the <code>:=</code> (walrus) operator
+variables are declared using the <code>:=</code> (walrus) operator.
 
 Examples:
 
-    // no initial value
-    myVar :=;
+    // create variable 'a' with a value of 1
+    a := 1;
     
-    // myVar is a number
-    myVar := 5;
+    // you can also use decimal numbers
+    b := 0.125
+    
+    // you can use other variables
+    // to declare or set other's values
+    c := a - b;     // c == 0.875
+    
         
-    // myVar is a function
-    myVar := func() {
-        /* function code */
-    }
-
-    // myVar is an object
-    myVar := {
-        foo: "bar"
-    }
-    
 ## changing a variable's value
 Changing a variable's value is done using
-the <code>=</code> operator.
-
-The new value must be of the same type as the value that
-was initially given to the variable
+the <code>=</code> operator. 
 
 Examples:
 
-    // declaring a variable of type 'number'
-    myVar := 5;
+    // create variable 'a'
+    a := 0;
+    // set value to 500
+    a = 500;    
     
-    // allowed, since 123 is a number
-    myVar = 123;
-    
-    // not allowed, since "hello" is a string
-    myVar = "hello";
