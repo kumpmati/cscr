@@ -16,7 +16,7 @@ func DefaultTraverserFunc(tokens []lex.Token) (out *Stack) {
 		}
 		switch newNode.Type.Type {
 		case Constant, Reference:
-			err = PushToOutStack(stacks, &newNode)
+			err = pushToOutStack(stacks, &newNode)
 		case Operator:
 			switch newNode.Type.SubType {
 			default:
@@ -27,21 +27,21 @@ func DefaultTraverserFunc(tokens []lex.Token) (out *Stack) {
 					hasHigherOrEqualPrecedence(&newNode, topOperator) &&
 					topOperator.Value != "(" {
 					// pop to out stack from operator stack
-					err = PushOperator(stacks, popFromOperatorStack(stacks))
+					err = pushOperator(stacks, popFromOperatorStack(stacks))
 					topOperator = fakePopFromStack(&stacks.operators)
 				}
 				// push top operator stack
-				err = PushToOperatorStack(stacks, &newNode)
+				err = pushToOperatorStack(stacks, &newNode)
 			}
 		case Block:
 			switch newNode.Value {
 			case "(":
-				err = PushToOperatorStack(stacks, &newNode)
+				err = pushToOperatorStack(stacks, &newNode)
 			case ")":
 				topOperator := fakePopFromStack(&stacks.operators)
 
 				for topOperator != nil && topOperator.Value != "(" {
-					err = PushOperator(stacks, popFromOperatorStack(stacks))
+					err = pushOperator(stacks, popFromOperatorStack(stacks))
 					topOperator = fakePopFromStack(&stacks.operators)
 
 					if stacks.operators.Size() == 0 {
@@ -56,7 +56,7 @@ func DefaultTraverserFunc(tokens []lex.Token) (out *Stack) {
 		default:
 			for stacks.operators.Size() > 0 {
 				if node := popFromOperatorStack(stacks); node != nil {
-					err = PushOperator(stacks, node)
+					err = pushOperator(stacks, node)
 				}
 			}
 		}
@@ -67,7 +67,7 @@ func DefaultTraverserFunc(tokens []lex.Token) (out *Stack) {
 	}
 	for stacks.operators.Size() > 0 {
 		if node := popFromOperatorStack(stacks); node != nil {
-			if err := PushOperator(stacks, node); err != nil {
+			if err := pushOperator(stacks, node); err != nil {
 				panic(err)
 			}
 		}

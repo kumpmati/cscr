@@ -83,10 +83,6 @@ func (l *Lexer) LexFile(path string) (tokens []Token, err error) {
 
 // reads the lexer struct's file line by line
 func (l *Lexer) Lex() (tokens []Token, err error) {
-	if l.config.LineParser == nil {
-		panic("no line parser specified")
-	}
-
 	scanner := bufio.NewScanner(l.currentFile)
 	for scanner.Scan() {
 		txtLine := scanner.Text()
