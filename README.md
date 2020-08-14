@@ -5,11 +5,9 @@
 It has many bugs and edge cases that break the lexer, parser and/or evaluator.
 
 ## Usage:
-1) To build, run
-<code>go build</code> in the project's root directory.
-or build the <code>/cmd/cscr/main.go</code> file
-2) To run code, run <code>main <path_to_code></code> in the folder with the built executable.
-(assuming <code>go build</code> produced an executable named 'main')
+1) To build the cli, build the <code>/cmd/cscr/main.go</code> file
+2) To run some code, run <code>main yourCode.cscr</code> in the folder with the built executable.
+(assuming the build process produced an executable named 'main')
 
 ## What is it
 Cscr is an interpreted, not-even-typed, start of a simple scripting language.
@@ -41,9 +39,10 @@ Lines starting with a double slash '//' will be ignored by the parser.
 If the line does not start with a comment, it will be parsed as code all the way through.
 
 #### Values
-Values in Cscr can be either constants or references.
+Values in Cscr can be either values or references.
 If a variable is assigned to another variable, a reference to that variable will be assigned.
-However, if a reference is used in a mathematical or logical operation, it will be converted to a constant value
+However, if a reference is used in a mathematical or logical operation,
+it will be converted to a value by getting the value of the reference
 
 Example of a reference:
 
@@ -57,7 +56,7 @@ Example of a reference:
     b == a
     // == 1 (true)
     
-Example of converting a reference:
+Example of converting a reference to a value:
     
     //declare 'a'
     a := 1;
