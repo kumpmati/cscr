@@ -8,7 +8,7 @@ It has many bugs and edge cases that break the lexer, parser and/or evaluator.
 1) To build, run
 <code>go build</code> in the project's root directory.
 or build the <code>/cmd/cscr/main.go</code> file
-2) To run code, run <code>main <path_to_code></code> in the project's root directory.
+2) To run code, run <code>main <path_to_code></code> in the folder with the built executable.
 (assuming <code>go build</code> produced an executable named 'main')
 
 ## What is it
