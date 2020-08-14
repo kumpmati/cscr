@@ -16,9 +16,10 @@ Cscr is an interpreted, not-even-typed, start of a simple scripting language.
 It's written entirely in Go.
 
 Cscr currently has only numbers (decimal and integer), and text as variable names.
-You can create variables, assign them values, and reassign those values. Oh the joy!
+You can create variables, calculate expressions, assign them as values, and even assign variables as values! Oh the joy!
 
-Cscr currently supports basic logical operations (excluding negation (!)) by converting true to 1 and false to 0
+Cscr currently supports basic mathematical 
+and logical operations with parenthesis, converting true to 1 and false to 0 (negation is buggy tho)
 
 The parser uses the [shunting-yard algorithm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm)
 to parse expressions, and so should follow the proper mathematics order of operations.
@@ -31,7 +32,7 @@ The whole program is one big expression, so the value of the
 last line of the program will be printed after execution is done.
 
 There can be multiple expressions or operations in an expression: 
-<code>(a := 1; a + 1)</code> would evaluate to 2 outside the parenthesis, since a + 1 == 2.
+<code>(a := 1; a + 1)</code> would evaluate to 2.
 Declaring a variable will return a reference to the created variable.
 
 #### Comments
