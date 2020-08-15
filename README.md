@@ -23,14 +23,30 @@ The parser uses the [shunting-yard algorithm](https://en.wikipedia.org/wiki/Shun
 to parse expressions, and so should follow the proper mathematics order of operations.
 
 ## Features
-#### Return values
-In cscr, every operation and expression returns a value or a reference,
-and the last operation of an expression will always be returned.
-The whole program is one big expression, so the value of the
-last line of the program will be printed after execution is done.
+#### No scope
+Cscr does not have the context or scope, so after a variable is declared, it can be used anywhere.
+This even works on the same line of code, and so you can declare variables inside a variable declaration. Funky, right?
 
-There can be multiple expressions or operations in an expression: 
-<code>(a := 1; a + 1)</code> would evaluate to 2.
+#### Return values
+In cscr, every operation and expression returns either a value or a reference.
+When the program is finished, it will output the value of the last line of code to the terminal.
+
+An expression will return the evaluated value of that expression.
+Example:
+
+    // this expression will return 2
+    (1 + 1);
+    // this expression will return a reference to a, which when evaluated is 3
+    (a := 1 + 2)
+    // you can also declare a variable inside a variable declaration:
+    // b's value will be a reference to 'a'
+    b := (a := 1 + 1)
+    // changing a will affect b
+    a += 1;
+    // this will return 1 (=true)
+    b == 3
+    
+
 Declaring a variable will return a reference to the created variable.
 
 #### Comments
